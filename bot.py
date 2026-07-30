@@ -248,12 +248,21 @@ async def addproduct(m: Message, state: FSMContext):
     )
 
 @dp.message(AddProduct.category)
-async def pc(m:Message,s:FSMContext):
-    if not is_admin(m): return
-    try: cid=int(m.text)
-    except: return await m.answer("Введите число.")
-    if not category(cid): return await m.answer("Такого раздела нет.")
-    await s.update_data(category=cid); await s.set_state(AddProduct.name); await m.answer("Название товара:")
+async def pc(m: Message, state: FSMContext):
+    if not is_admin(m):
+        return
+
+    try:
+        cid = int(m.text)
+    except:
+        return await m.answer("Введите число.")
+
+    if not category(cid):
+        return await m.answer("Такого раздела нет.")
+
+    await state.update_data(category=cid)
+    await state.set_state(AddProduct.name)
+    await m.answer("Название товара:")
 
 @dp.message(AddProduct.name)
 async def pn(m:Message,s:FSMContext):
