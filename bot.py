@@ -126,30 +126,49 @@ async def start(m:Message):
         "Выберите раздел или найдите нужную деталь:",
         reply_markup=home_kb())
 
-@dp.callback_query(F.data=="home")
-async def home(c:CallbackQuery):
-    await c.message.edit_text(
-        "⚡ <b>КУРЬЕРСКИЕ ДВИЖЕНИЯ</b>\n\nВыберите действие:",
-        reply_markup=home_kb()); await c.answer()
-
-@dp.callback_query(F.data=="catalog")
-async def catalog(c:CallbackQuery):
-    if not categories():
-        await c.message.edit_text("📦 <b>Каталог пока пуст.</b>", reply_markup=home_kb())
-    else:
+@dp.callback_query(F.data == "home")
+async def home(c: CallbackQuery):
+    try:
         await c.message.edit_text(
-            "🛍 <b>КАТАЛОГ</b>\n\nВыберите категорию:",
-            reply_markup=cats_kb())
+            "⚡ <b>КУРЬЕРСКИЕ ДВИЖЕНИЯ</b>\n\nВыберите действие:",
+            reply_markup=home_kb()
+        )
+    except Exception:
+        await c.message.delete()
+        await c.message.answer(
+            "⚡ <b>КУРЬЕРСКИЕ ДВИЖЕНИЯ</b>\n\nВыберите действие:",
+            reply_markup=home_kb()
+        )
+
     await c.answer()
 
 @dp.callback_query(F.data.startswith("cat:"))
-async def cat(c:CallbackQuery):
-    cid=int(c.data.split(":")[1]); x=category(cid)
-    if not x: return await c.answer("Раздел не найден", show_alert=True)
-    ps=products(cid)
-    text=f"📂 <b>{escape(x['name'])}</b>\n\n"
-    text += f"Найдено товаров: <b>{len(ps)}</b>\n\nВыберите товар:"
-    await c.message.edit_text(text, reply_markup=products_kb(cid,ps)); await c.answer()
+async def cat(c: CallbackQuery):
+    cid = int(c.data.split(":")[1])
+    x = category(cid)
+
+    if not x:
+        return await c.answer("Раздел не найден", show_alert=True)
+
+    ps = products(cid)
+
+    text = f"📂 <b>{escape(x['name'])}</b>\n\n"
+    text += f"Найдено товаров: <b>{len(ps)}</b>\n\n"
+    text += "Выберите товар:"
+
+    try:
+        await c.message.edit_text(
+            text,
+            reply_markup=products_kb(cid, ps)
+        )
+    except Exception:
+        await c.message.delete()
+        await c.message.answer(
+            text,
+            reply_markup=products_kb(cid, ps)
+        )
+
+    await c.answer()
 
 @dp.callback_query(F.data.startswith("prod:"))
 async def prod(c:CallbackQuery):
