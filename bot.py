@@ -223,12 +223,19 @@ async def addcat_name(m:Message,s:FSMContext):
     await s.clear(); await m.answer("✅ Раздел добавлен.")
 
 @dp.message(Command("addproduct"))
-async def addproduct(m:Message,s:FSMContext):
-    if not is_admin(m): return
-    cs=categories()
-    if not cs: return await m.answer("Сначала добавьте раздел /addcat")
-    await s.set_state(AddProduct.category)
-    await m.answer("ID раздела:\n"+"\n".join(f"{x['id']} — {x['name']}" for x in cs))
+async def addproduct(m: Message, state: FSMContext):
+    if not is_admin(m):
+        return
+
+    cs = categories()
+    if not cs:
+        return await m.answer("Сначала добавьте раздел /addcat")
+
+    await state.set_state(AddProduct.category)
+    await m.answer(
+        "ID раздела:\n" +
+        "\n".join(f"{x['id']} — {x['name']}" for x in cs)
+    )
 
 @dp.message(AddProduct.category)
 async def pc(m:Message,s:FSMContext):
