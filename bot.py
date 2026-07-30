@@ -121,7 +121,7 @@ async def render_product(target, pid, index_hint=0, edit=False):
 @dp.message(CommandStart())
 async def start(m:Message):
     await m.answer(
-        "⚡ <b>EBIKE PARTS</b>\n\n"
+        "⚡ <b>КУРЬЕРСКИЕ ДВИЖЕНИЯ</b>\n\n"
         "Комплектующие для электровелосипедов.\n"
         "Выберите раздел или найдите нужную деталь:",
         reply_markup=home_kb())
