@@ -271,9 +271,11 @@ async def pn(m: Message, state: FSMContext):
     await m.answer("Описание (или -):")
 
 @dp.message(AddProduct.description)
-async def pd(m:Message,s:FSMContext):
-    await s.update_data(description="" if m.text.strip()=="-" else m.text.strip())
-    await s.set_state(AddProduct.price); await m.answer("Цена (или -):")
+async def pd(m: Message, state: FSMContext):
+    description = "" if m.text.strip() == "-" else m.text.strip()
+    await state.update_data(description=description)
+    await state.set_state(AddProduct.price)
+    await m.answer("Цена (или -):")
 
 @dp.message(AddProduct.price)
 async def pp(m:Message,s:FSMContext):
