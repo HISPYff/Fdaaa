@@ -278,19 +278,40 @@ async def pd(m: Message, state: FSMContext):
     await m.answer("Цена (или -):")
 
 @dp.message(AddProduct.price)
-async def pp(m:Message,s:FSMContext):
-    await s.update_data(price="" if m.text.strip()=="-" else m.text.strip())
-    await s.set_state(AddProduct.photo); await m.answer("Фото товара или -:")
+async def pp(m: Message, state: FSMContext):
+    price = "" if m.text.strip() == "-" else m.text.strip()
+    await state.update_data(price=price)
+    await state.set_state(AddProduct.photo)
+    await m.answer("Фото товара или -:")
+
 
 @dp.message(AddProduct.photo)
-async def pphoto(m:Message,s:FSMContext):
-    d=await s.get_data()
-    if m.photo: photo=m.photo[-1].file_id
-    elif m.text and m.text.strip()=="-": photo=""
-    else: return await m.answer("Отправьте фото или -.")
-    c=db(); c.execute("INSERT INTO products(category_id,name,description,price,photo_id) VALUES(?,?,?,?,?)",
-        (d["category"],d["name"],d["description"],d["price"],photo)); c.commit(); c.close()
-    await s.clear(); await m.answer("✅ Товар добавлен.")
+async def pphoto(m: Message, state: FSMContext):
+    d = await state.get_data()
+
+    if m.photo:
+        photo = m.photo[-1].file_id
+    elif m.text and m.text.strip() == "-":
+        photo = ""
+    else:
+        return await m.answer("Отправьте фото или -.")
+
+    c = db()
+    c.execute(
+        "INSERT INTO products(category_id,name,description,price,photo_id) VALUES(?,?,?,?,?)",
+        (
+            d["category"],
+            d["name"],
+            d["description"],
+            d["price"],
+            photo
+        )
+    )
+    c.commit()
+    c.close()
+
+    await state.clear()
+    await m.answer("✅ Товар добавлен.")
 
 @dp.message(Command("cats"))
 async def cats(m:Message):
