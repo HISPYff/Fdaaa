@@ -129,7 +129,7 @@ async def start(m:Message):
 @dp.callback_query(F.data=="home")
 async def home(c:CallbackQuery):
     await c.message.edit_text(
-        "⚡ <b>EBIKE PARTS</b>\n\nВыберите действие:",
+        "⚡ <b>КУРЬЕРСКИЕ ДВИЖЕНИЯ</b>\n\nВыберите действие:",
         reply_markup=home_kb()); await c.answer()
 
 @dp.callback_query(F.data=="catalog")
