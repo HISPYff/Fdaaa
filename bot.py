@@ -265,8 +265,9 @@ async def pc(m: Message, state: FSMContext):
     await m.answer("Название товара:")
 
 @dp.message(AddProduct.name)
-async def pn(m:Message,s:FSMContext):
-    await s.update_data(name=m.text.strip()); await s.set_state(AddProduct.description)
+async def pn(m: Message, state: FSMContext):
+    await state.update_data(name=m.text.strip())
+    await state.set_state(AddProduct.description)
     await m.answer("Описание (или -):")
 
 @dp.message(AddProduct.description)
