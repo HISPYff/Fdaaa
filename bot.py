@@ -211,9 +211,10 @@ async def admin(m:Message):
     await m.answer("<b>⚙️ Админ-панель</b>\n\n/addcat\n/addproduct\n/cats\n/products\n/delcat ID\n/delproduct ID")
 
 @dp.message(Command("addcat"))
-async def addcat(m:Message,s:FSMContext):
+async def addcat(m: Message, state: FSMContext):
     if not is_admin(m): return
-    await s.set_state(AddCategory.name); await m.answer("Название нового раздела:")
+    await state.set_state(AddCategory.name)
+    await m.answer("Название нового раздела:")
 
 @dp.message(AddCategory.name)
 async def addcat_name(m:Message,s:FSMContext):
