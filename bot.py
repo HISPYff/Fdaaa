@@ -150,6 +150,35 @@ async def home(c: CallbackQuery):
 
     await c.answer()
 
+@dp.callback_query(F.data == "catalog")
+async def catalog(c: CallbackQuery):
+    cats = categories()
+
+    if not cats:
+        return await c.answer("Каталог пока пуст.", show_alert=True)
+
+    text = "🛍 <b>Каталог</b>\n\nВыберите раздел:"
+
+    try:
+        if c.message.photo:
+            await c.message.edit_caption(
+                caption=text,
+                reply_markup=cats_kb()
+            )
+        else:
+            await c.message.edit_text(
+                text,
+                reply_markup=cats_kb()
+            )
+    except Exception:
+        await c.message.delete()
+        await c.message.answer(
+            text,
+            reply_markup=cats_kb()
+        )
+
+    await c.answer()
+
 @dp.callback_query(F.data.startswith("cat:"))
 async def cat(c: CallbackQuery):
     cid = int(c.data.split(":")[1])
