@@ -128,15 +128,23 @@ async def start(m:Message):
 
 @dp.callback_query(F.data == "home")
 async def home(c: CallbackQuery):
+    text = "⚡ <b>КУРЬЕРСКИЕ ДВИЖЕНИЯ</b>\n\nВыберите действие:"
+
     try:
-        await c.message.edit_text(
-            "⚡ <b>КУРЬЕРСКИЕ ДВИЖЕНИЯ</b>\n\nВыберите действие:",
-            reply_markup=home_kb()
-        )
+        if c.message.photo:
+            await c.message.edit_caption(
+                caption=text,
+                reply_markup=home_kb()
+            )
+        else:
+            await c.message.edit_text(
+                text,
+                reply_markup=home_kb()
+            )
     except Exception:
         await c.message.delete()
         await c.message.answer(
-            "⚡ <b>КУРЬЕРСКИЕ ДВИЖЕНИЯ</b>\n\nВыберите действие:",
+            text,
             reply_markup=home_kb()
         )
 
@@ -157,10 +165,16 @@ async def cat(c: CallbackQuery):
     text += "Выберите товар:"
 
     try:
-        await c.message.edit_text(
-            text,
-            reply_markup=products_kb(cid, ps)
-        )
+        if c.message.photo:
+            await c.message.edit_caption(
+                caption=text,
+                reply_markup=products_kb(cid, ps)
+            )
+        else:
+            await c.message.edit_text(
+                text,
+                reply_markup=products_kb(cid, ps)
+            )
     except Exception:
         await c.message.delete()
         await c.message.answer(
