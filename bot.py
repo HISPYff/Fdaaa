@@ -217,10 +217,20 @@ async def addcat(m: Message, state: FSMContext):
     await m.answer("Название нового раздела:")
 
 @dp.message(AddCategory.name)
-async def addcat_name(m:Message,s:FSMContext):
-    if not is_admin(m): return
-    c=db(); c.execute("INSERT INTO categories(name) VALUES(?)",(m.text.strip(),)); c.commit(); c.close()
-    await s.clear(); await m.answer("✅ Раздел добавлен.")
+async def addcat_name(m: Message, state: FSMContext):
+    if not is_admin(m):
+        return
+
+    c = db()
+    c.execute(
+        "INSERT INTO categories(name) VALUES(?)",
+        (m.text.strip(),)
+    )
+    c.commit()
+    c.close()
+
+    await state.clear()
+    await m.answer("✅ Раздел добавлен.")
 
 @dp.message(Command("addproduct"))
 async def addproduct(m: Message, state: FSMContext):
